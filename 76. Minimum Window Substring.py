@@ -1,25 +1,30 @@
+# from typing import str
+import collections
+
 class Solution:
     def minWindow(self, s: str, t: str) -> str:
-        def contained(string1: str, string2: str) -> bool:
-            sort_string1 = sorted(list(string1))
-            sort_string2 = sorted(list(string2))
-            i, j = 0, 0
-            while i < len(string1):
-                if j >= len(sort_string2):
-                    return False
-                if sort_string1[i] == sort_string2[j]:
-                    i += 1
-                j +=1
-            return True
+        letterCount = collections.Counter(t)
+        toContain = len(t)
+        minLeft = -1
+        minLength = len(s) + 1
 
-        if not contained(t, s):
-            return ""
-        ans = s
-        for i in range(len(s)):
-            for j in range(i, len(s)):
-                if contained(t, s[i: j + 1]) and len(ans) > (j - i + 1):
-                    ans = s[i: j + 1]
-        return ans
+        left = 0
+        for right, char in enumerate(s):
+            letterCount[char] -= 1
+            if letterCount[char] >= 0:
+                toContain -= 1
+            
+            while toContain == 0:
+                if right - left + 1 < minLength:
+                    minLeft = left
+                    minLength = right - left + 1
+                letterCount[s[left]] += 1
+                if letterCount[s[left]] > 0:
+                    toContain += 1
+                left += 1
+            
+        return "" if minLeft == -1 else s[minLeft: minLeft + minLength]
+                
 
 solution = Solution()
 print(solution.minWindow("ADOBECODEBANC", "ABC"))
