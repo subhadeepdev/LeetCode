@@ -17,12 +17,19 @@ class Codec:
         """
         if not root:
             return ""
-        answer = []
+        nodeList = []
         queue = collections.deque([root])
         while queue:
+            left, right = 0, 0
             node = queue.popleft()
-            answer.extend([node.val, node.left != None, node.right != None])
-        return " ".join(answer)
+            if node.left:
+                left = 1
+                queue.append(node.left)
+            if node.right:
+                right = 1
+                queue.append(node.right)
+            nodeList.extend([node.val, left, right])
+        return " ".join(str(item) for item in nodeList)
 
     def deserialize(self, data):
         """Decodes your encoded data to tree.
@@ -33,19 +40,19 @@ class Codec:
         if len(data) == 0:
             return None
         data = data.split()
-        i = 0
-        queue = collections.deque([TreeNode(None)])
+        i, root = 0, TreeNode(None)
+        queue = collections.deque([root])
         while i < len(data):
             node = queue.popleft()
-            val, left, right = int(data[i]), bool(data[i + 1]), bool(data[i + 2])
+            node.val, left, right = int(data[i]), int(data[i + 1]), int(data[i + 2])
+            i += 3
             if left:
                 node.left = TreeNode(None)
                 queue.append(node.left)
             if right:
                 node.right = TreeNode(None)
                 queue.append(node.right)
-
-        
+        return root
 
 # Your Codec object will be instantiated and called as such:
 # ser = Codec()
