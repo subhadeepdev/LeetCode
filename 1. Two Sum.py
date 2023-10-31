@@ -11,4 +11,4 @@ class Solution:
                 i += 1
             else:
                 j -= 1
-        return None        
+        return None
